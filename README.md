@@ -10,4 +10,5 @@ DesertBus de l'espoir: http://www.desertbus.fr/
 Clone and compile game.less into game.css
 
 ## Demo
-http://tuxosaurus.fr/css-games/desertbug/
+http://tuxosaurus.fr/css-games/desertbug/  
+http://codepen.io/Tuxosaurus/pen/jPeRqg  
