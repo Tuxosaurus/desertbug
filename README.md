@@ -8,3 +8,6 @@ DesertBus de l'espoir: http://www.desertbus.fr/
 
 ## Installation
 Clone and compile game.less into game.css
+
+## Demo
+http://tuxosaurus.fr/css-games/desertbug/
