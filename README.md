@@ -1,5 +1,5 @@
 # Desert Bug
-CSS parody of the Desert Bus game
+CSS parody of the Desert Bus game, this time you "play" the bug...
 
 ## Charity
 Support Desert Bus initiatives around the world:  
