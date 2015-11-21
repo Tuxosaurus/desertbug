@@ -1,0 +1,249 @@
+// the code is awful, sorry
+@screenW: 640px;
+@screenH: 480px;
+@speed: .25s;
+@busSpeed: 16s;
+@pavementLight: #bc8116;
+@pavementDark: #aa7810;
+@pavementBorder: #7d6100;
+@road: #606060;
+@roadLine: #dcc338;
+@worldW: 500%;
+@defaultOffset: -(@worldW / 2);
+@roadW: (@worldW / 100);
+@offsetStep: .5;
+@angle: 150deg;
+@rotation: rotateX(@angle);
+@gridColumns: 7;
+@gridW: (100% / @gridColumns);
+
+@keyframes scrollPavement {
+  0% {
+    background-image: repeating-linear-gradient(to bottom, @pavementDark, @pavementDark 10%, @pavementLight 10%, @pavementLight 20%);
+  }
+  33% {
+    background-image: repeating-linear-gradient(to bottom, @pavementLight, @pavementLight 5%, @pavementDark 5%, @pavementDark 15%, @pavementLight 15%, @pavementLight 20%);
+  }
+  66% {
+    background-image: repeating-linear-gradient(to bottom, @pavementLight, @pavementLight 10%, @pavementDark 10%, @pavementDark 20%);
+  }
+  100% {
+    background-image: repeating-linear-gradient(to bottom, @pavementDark, @pavementDark 5%, @pavementLight 5%, @pavementLight 15%, @pavementDark 15%, @pavementDark 20%);
+  }
+}
+
+@keyframes scrollRoad {
+  0% {
+    background-image: repeating-linear-gradient(to bottom, @roadLine, @roadLine 5%, @road 5%, @road 15%);
+  }
+  33% {
+    background-image: repeating-linear-gradient(to bottom, @road, @road 2.5%, @roadLine 2.5%, @roadLine 7.5%, @road 7.5%, @road 15%);
+  }
+  66% {
+    background-image: repeating-linear-gradient(to bottom, @road, @road 5%, @roadLine 5%, @roadLine 10%, @road 10%, @road 15%);
+  }
+  100% {
+    background-image: repeating-linear-gradient(to bottom, @road, @road 10%, @roadLine 10%, @roadLine 15%);
+  }
+}
+
+@keyframes scrollSign {
+  0% {
+    transform: translateZ(18px) rotateX(-@angle) scale(0.1);
+  }
+  10% {
+    transform: translateZ(18px) rotateX(-@angle) scale(0.1);
+  }
+  100% {
+    transform: translateZ(-10px) rotateX(-@angle) scale(1);
+  }
+}
+
+@keyframes bus {
+  0% {
+    bottom: 60%;
+    left: 50%;
+    opacity: 0;
+  }
+  90% {
+    bottom: 60%;
+    left: 50%;
+    opacity: 0;
+  }
+  91% {
+    bottom: 60%;
+    left: 50%;
+    opacity: 1;
+  }
+  100% {
+    bottom: -10%;
+    left: 48%;
+  }
+}
+
+@keyframes game-over {
+  0% {
+    opacity: 0;
+    z-index: 0;
+  }
+  99% {
+    opacity: 0;
+    z-index: 0;
+  }
+  100% {
+    opacity: 1;
+    z-index: 3;
+  }
+}
+
+body,
+html,
+.Screen,
+.GameOver {
+  width: 100%;
+  height: 100%;
+}
+
+body {
+  padding: 0;
+  margin: 0;
+}
+
+.Screen {
+  background: #333;
+}
+
+.Game {
+  overflow: hidden;
+  z-index: 1;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: @screenW;
+  height: @screenH;
+  margin-top: -(@screenH / 2);
+  margin-left: -(@screenW / 2);
+  background: lightblue;
+  
+  perspective: 50px;
+  perspective-origin: top;
+  
+  cursor: url('http://cjouineau.free.fr/bug.png'), auto;
+}
+
+.GameOver {
+  opacity: 1;
+  position: relative;
+  background: #038200;
+  animation: game-over @busSpeed ease-out 1 forwards;
+}
+
+.Road {
+  position: absolute;
+  bottom: 20%;
+  left: 50%;
+  margin-left: @defaultOffset;
+  width: @worldW;
+  height: 100%;
+  
+  transform-style: preserve-3d;
+  transform: @rotation;
+
+  animation: scrollPavement @speed infinite linear; 
+}
+
+.Road::before {
+  content: '';
+  display: block;
+  width: @roadW;
+  height: 100%;
+  margin: 0 auto;
+  border: 0 solid @pavementBorder;
+  border-width: 0 20px; /*grrr*/
+  background-color: @road;
+}
+
+.Road::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 50%;
+  display: block;
+  width: .1%;
+  height: 100%;
+  margin-left: -.05%;
+  
+  animation: scrollRoad @speed infinite linear;
+}
+
+.Bus {
+  z-index: 2;
+  position: absolute;
+  bottom: 90%;
+  left: 50%;
+  width: 100px;
+  height: 264px;
+  background: transparent url('http://cjouineau.free.fr/bus2.png') no-repeat 50% 0%;
+  animation: bus @busSpeed infinite ease-in forwards;
+  transform: rotateX(-@angle);
+}
+
+.Grid {
+  z-index: 10;
+  position: absolute;
+  top: 0;
+  width: @gridW;
+  height: 100%;
+}
+
+.Grid--offsetMiddle {
+  left: (3 *@gridW);
+}
+
+.Grid--offsetLeft {
+  left: 0;
+
+  &.Grid--offset3:hover ~ .Road {
+    transform: @rotation translateX(3 * @offsetStep * 1%);
+  }
+  
+  &.Grid--offset2:hover ~ .Road {
+    transform: @rotation translateX(2 * @offsetStep * 1%);
+  }
+  
+  &.Grid--offset1:hover ~ .Road {
+    transform: @rotation translateX(@offsetStep * 1%);
+  }
+  
+  + .Grid--offsetLeft {
+    left: @gridW;
+    
+    + .Grid--offsetLeft {
+      left: (2 *@gridW);
+    }
+  }
+}
+
+.Grid--offsetRight {
+  right: (2 *@gridW);
+  
+  &.Grid--offset3:hover ~ .Road {
+    transform: @rotation translateX(-3 * @offsetStep * 1%);
+  }
+  
+  &.Grid--offset2:hover ~ .Road {
+    transform: @rotation translateX(-2 * @offsetStep * 1%);
+  }
+  
+  &.Grid--offset1:hover ~ .Road {
+    transform: @rotation translateX(-@offsetStep * 1%);
+  }
+
+  + .Grid--offsetRight {
+    right: @gridW;
+    
+    + .Grid--offsetRight {
+      right: 0;
+    }
+  }
+}
